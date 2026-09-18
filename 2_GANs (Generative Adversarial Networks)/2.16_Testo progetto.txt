@@ -1,0 +1,71 @@
+Progetto Finale: Generazione Condizionata di Immagini con cWGAN-GP
+
+Obiettivo del Progetto
+
+Benvenuti al progetto finale del modulo sulle GAN! La vostra sfida sarà implementare una Conditional Wasserstein GAN 
+con Gradient Penalty (cWGAN-GP) per generare immagini realistiche appartenenti a categorie specifiche.
+
+Dimenticate i dataset "giocattolo" come MNIST; lavorerete con il dataset STL-10, una sfida reale che richiede la gestione di immagini a colori (RGB) 
+e architetture convoluzionali profonde. L'obiettivo è produrre un generatore capace di creare, a comando, immagini coerenti di aerei, uccelli, navi e altre classi del dataset.
+
+        ***
+Requisiti Tecnici
+Il vostro progetto dovrà integrare i seguenti pilastri tecnologici analizzati durante il corso:
+1. Stabilità del training (WGAN-GP): implementazione della Wasserstein Loss e del calcolo del Gradient Penalty per evitare il Mode Collapse e stabilizzare i gradienti.
+2. Controllo dell'Output (Conditional GAN): Utilizzo di etichette di classe (labels) per condizionare sia il Generatore che il Critico, passando dalla generazione casuale alla generazione mirata.
+3. Architettura Convoluzionale: Utilizzo di layer Conv2DTranspose per l'upsampling (Generatore) e Conv2D con stride per il downsampling (Critico).
+4. Integrazione Classi: Utilizzo di Embedding Layers per iniettare l'informazione semantica della classe nelle reti.
+
+        ***
+
+Traccia delle Attività
+Fase 1: Data Pipeline
+- Caricamento del Dataset: Utilizzate torchvision.datasets per scaricare e caricare la porzione 'train' di STL-10.
+
+import torchvision 
+
+from torchvision import transforms 
+
+transform = transforms.Compose([ 
+
+    transforms.Resize(64), 
+
+    transforms.ToTensor(), 
+
+    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)) 
+
+]) 
+
+train_dataset = torchvision.datasets.STL10( 
+
+    root='./data', split='train', download=True, transform=transform 
+
+)
+
+- Preprocessing: Assicuratevi che le immagini siano ridimensionate a 64x64 pixel e normalizzate nell'intervallo [-1, 1].
+- Batching: Utilizzate un DataLoader con una batch_size suggerita di 64 o 128.
+
+Fase 2: Sviluppo del Generatore
+- Progettare una rete che riceva in input un vettore di rumore \(z\) e una classe \(y\).
+- Utilizzare layer Dense, Reshape e blocchi di Conv2DTranspose alternati a BatchNormalization e ReLU.
+- Layer finale con attivazione tanh.
+
+Fase 3: Sviluppo del Critico
+- Progettare un "Critico" che valuti coppie (Immagine, Classe).
+- Utilizzare LayerNormalization invece di BatchNormalization (come richiesto dallo standard WGAN-GP).
+- L'output deve essere un singolo valore scalare non vincolato (nessuna attivazione finale Sigmoid).
+
+Fase 4: Custom Training Loop
+- Implementare il ciclo di addestramento manuale.
+- Calcolare il Gradient Penalty su campioni interpolati.
+- Aggiornare il Critico 5 volte per ogni aggiornamento del Generatore.
+
+Fase 5: Validazione e Visualizzazione
+- Dopo ogni 10 epoche, generare una "Galleria delle Classi": una griglia di immagini dove ogni riga rappresenta una delle 10 categorie di STL-10.
+- Graficare l'andamento della loss del Critico per confermare la convergenza.
+
+Cosa consegnare
+
+1. Notebook Jupyter / Script Python: Il codice deve essere pulito, modulare e ampiamente commentato. 
+2. Risultati Visivi: Almeno 3 immagini che mostrino l'evoluzione della generazione (all'inizio, a metà e a fine training).
+3. Breve Relazione (Opzionale): Una nota sulle iper-parametri scelti (learning rate, dimensione embedding, coefficiente GP) e sulle difficoltà incontrate.

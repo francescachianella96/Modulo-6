@@ -1,0 +1,49 @@
+                                                                 Progetto: Variational Autoencoder (VAE) su Flowers102
+
+Obiettivo del Progetto
+
+L'obiettivo di questo caso pratico è implementare un Variational Autoencoder (VAE) completo utilizzando PyTorch.
+Invece dei classici MNIST o FashionMNIST, utilizzeremo il dataset Flowers102, che presenta immagini a colori di 102 specie di fiori diverse.
+Dovrai costruire un'architettura in grado di comprimere queste immagini in uno spazio latente continuo e denso, permettendo non solo la ricostruzione, ma anche la navigazione (interpolazione) e la generazione di nuovi fiori realistici.
+
+Fasi del Progetto
+
+Fase 1: Data Strategy e Preprocessing
+
+- Carica il dataset Flowers102 (split 'train') tramite torchvision.
+- Applica trasformazioni per ridimensionare le immagini a \(64 \times 64\) e normalizzarle in un range \([0, 1]\).
+- Configura un DataLoader efficiente.
+
+Fase 2: Architettura del Variational Autoencoder
+
+Implementa una classe VAE che includa:
+
+1. Encoder: Una serie di blocchi convoluzionali per estrarre feature spaziali, terminando con due rami lineari che producono i vettori \(\mu\) (media) e \(\log(\sigma^2)\) (log-varianza).
+2. Reparameterization Trick: Una funzione per campionare \(z\) dallo spazio latente in modo derivabile: \(z = \mu +\sigma \cdot \epsilon\)
+3. Decoder: Una rete speculare all'encoder (usando ConvTranspose2d) che parta dal vettore latente \(z\) per ricostruire l'immagine originale \(64 \times 64 \times 3\).
+
+Fase 3: Definizione della Loss Function (ELBO)
+
+La funzione di perdita deve essere composta da due termini:
+1. Reconstruction Loss: Misura quanto l'immagine ricostruita è simile all'originale (usa MSELoss o BinaryCrossEntropy)
+2. KL Divergence: Regolarizza lo spazio latente forzando la distribuzione approssimata \(q(z|x)\) a essere vicina a una normale standard \(\mathcal{N}(0, 1)\).
+
+Fase 4: Training Loop e KL Annealing
+
+- Implementa il loop di addestramento.
+- Bonus: Implementa una tecnica di "KL Annealing" (aumentare gradualmente il peso del termine KL durante le prime epoche) per evitare il posterior collapse.
+- Monitora l'andamento delle due componenti della loss.
+
+Fase 5: Analisi dello Spazio Latente e Generazione
+
+1. Ricostruzione: Visualizza una griglia di immagini originali affiancate alle loro ricostruzioni
+2. Campionamento: Genera nuove immagini campionando vettori \(z\) casuali dalla distribuzione normale standard
+3. Interpolazione Latente: Seleziona due immagini del dataset, ottieni i loro vettori latenti (\(z_1, z_2\)) e mostra la trasformazione fluida (walk) tra i due punti.
+
+***
+
+Requisiti Tecnici
+Linguaggio: Python
+Framework: PyTorch
+Hardware: Supporto per CUDA/MPS se disponibile.
+Estetica: Le griglie di output devono essere chiare e ben formattate

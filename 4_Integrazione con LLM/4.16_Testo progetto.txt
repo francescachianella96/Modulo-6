@@ -1,0 +1,40 @@
+Progetto: Sistemi di Reasoning e RAG con Llama 3
+
+Obiettivo del Progetto
+
+L'obiettivo di questo caso pratico è implementare una pipeline di Large Language Model (LLM) avanzata. 
+Utilizzeremo Llama 3 (tramite Hugging Face) in modalità quantizzata a 4-bit per costruire un assistente in grado di eseguire compiti di ragionamento complesso (CoT), 
+rispondere a domande basate su documenti esterni (RAG - Retrieval-Augmented Generation) e operare in modalità zero-shot per l'analisi del sentimento. 
+Il progetto unisce i concetti di prompt engineering, architetture transformer e tecniche di fine-tuning efficiente (PEFT/LoRA) affrontati durante le lezioni.
+
+Fasi del Progetto
+
+Fase 1: Setup e Caricamento Modello Quantizzato
+Installa le librerie necessarie: transformers, bitsandbytes, accelerate, sentence-transformers
+Carica il modello Llama 3 dal Hugging Face Hub (es. meta-llama/Meta-Llama-3-8B-Instruct).
+Configura la quantizzazione a 4-bit (BitsAndBytesConfig) per permettere l'esecuzione su GPU consumer (come Google Colab T4).
+
+Fase 2: Prompt Engineering e Reasoning (Chain of Thought)
+Progetta un System Prompt robusto che definisca la "Persona" dell'assistente.
+Implementa tecniche di Chain of Thought (CoT) chiedendo esplicitamente al modello di "pensare passo dopo passo" per risolvere un problema logico o matematico.
+Utilizza dei delimitatori per separare chiaramente le istruzioni dall'input dell'utente.
+
+Fase 3: Retrieval-Augmented Generation (RAG)
+Prepara un piccolo dataset di conoscenza (anche file di testo o markdown).
+Implementa una strategia di Chunking dei documenti.
+Utilizza un modello di embedding (es. all-MiniLM-L6-v2) per convertire i chunk in vettori.
+Sviluppa la funzione di Retrieve che trovi il contesto più pertinente alla query e lo inserisca nel prompt finale per la Generate.
+
+Fase 4: Analisi Zero-shot e Inference Pipeline
+Esegui un compito di Sentiment Analysis zero-shot su un set di test (es. recensioni di prodotti) chiedendo al modello di classificare i testi in "Positivo" o "Negativo" senza addestramento specifico.
+Configura la pipeline di generazione con parametri come temperature, top_p e max_new_tokens.
+Implementa lo Streaming dell'output per una migliore User Experience.
+
+Fase 5: Conversione e Formattazione Strutturata (JSON)
+Forza il modello a produrre output in formato JSON valido utilizzando vincoli nel prompt.
+Verifica che il formato degli output sia consistente per l'integrazione con altre applicazioni.
+
+Requisiti Tecnici
+Linguaggio: Python
+Framework principali: PyTorch, Hugging Face Transformers.
+Librerie: transformers, bitsandbytes, accelerate, faiss-cpu (per la ricerca vettoriale)

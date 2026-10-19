@@ -1,0 +1,48 @@
+Progetto Finale: Synthetic Data Sandbox (VAE Edition)
+
+1. Obiettivo del Progetto 
+Sviluppare una piattaforma dove un utente può caricare un dataset tabellare "sensibile" (es. dati finanziari o medici), 
+addestrare un VAE per impararne la distribuzione latente e generare un dataset sintetico anonimo che mantenga le proprietà statistiche dell'originale, 
+interrogabile tramite un'interfaccia in linguaggio naturale (LLM).
+
+2. Architettura del Sistema 
+Il progetto si divide in 4 componenti principali: 
+1. Data Engine: Preprocessing dei dati (scaling e codifica). 
+2. Generative Core: Modello VAE (Encoder + Decoder) implementato in Pytorch. 
+3. Analytic Backend: API in FastAPI per gestire l'addestramento e la generazione. 
+4. User Interface: Dashboard in Streamlit per la visualizzazione e l'interazione con l'LLM.
+
+3. Fasi dello Sviluppo 
+Fase 1: Data Preparation Dataset consigliato: Un dataset pubblico di transazioni bancarie o record medici (es. Pima Indians Diabetes o Credit Card Fraud Detection da Kaggle). 
+Preprocessing: 
+- Normalizzazione delle variabili numeriche (MinMaxScaler). 
+- Codifica delle variabili categoriche (One-Hot Encoding). 
+- Gestione dei valori nulli.
+
+Fase 2: Il Cuore Generativo - VAE 
+Poiché lavoriamo con dati tabellari, la struttura sarà composta da strati densi (Fully Connected): 
+- Encoder: Prende in input il vettore dei dati, lo comprime in due vettori (media e log-varianza) che definiscono lo spazio latente. 
+- Reparameterization Trick: Implementazione della funzione di sampling per permettere la backpropagation. 
+- Decoder: Prende un punto dallo spazio latente e ricostruisce il vettore origina
+- Loss Function: Somma di Reconstruction Loss (MSE) e KL Divergence.
+
+Fase 3: Generazione e Validazione 
+Sampling: Una volta addestrato il VAE, si "spegne" l'encoder. Si generano nuovi dati campionando vettori casuali dalla distribuzione normale e passandoli al decoder. 
+Metriche di Qualità: 
+* Correlazione: Confronto visivo (Heatmap) delle matrici di correlazione tra dati reali e sintetici. 
+* Distribuzione: Confronto degli istogrammi per le variabili chiave (es. "Età" o "Importo speso"). 
+* Privacy Check: Verificare che non ci siano record sintetici identici a quelli reali (evitare l'overfitting).
+
+Fase 4: Integrazione LLM "Natural Language Analyst" 
+Setup: Collegamento alle API di OpenAI. 
+Prompt Engineering: Creare un system prompt che spieghi all'LLM la struttura del dataset sintetico (nomi delle colonne e tipo di dati). 
+Functionality: L'utente chiede: "Qual è la correlazione tra reddito e risparmio?". L'LLM genera il codice Python (Pandas + Matplotlib), il backend lo esegue in modo sicuro e restituisce il grafico sulla U
+
+Fase 5: API e UI 
+FastAPI: Creare endpoint per: 
+    - /upload: Caricare il CSV. 
+    - /train: Avviare l'addestramento del VAE. 
+    - /generate: Scaricare il dataset sintetico. 
+Streamlit UI: Upload file drag-and-drop. 
+Tabella comparativa Dati Reali vs Sintetici. 
+Chatbot integrato per l'analisi dei dati sintetici.
